@@ -263,17 +263,17 @@
             <div class="prefetch-status" id="prefetchStatus"></div>
 
             <div class="btn-group">
-                <a href="/a/?prefetch=https://cdn.jsdelivr.net/gh/gaoxiao6331/cdn-test@examples/ex-res.js"
+                <a href="/prefetcher-examples/a/?prefetch=https://cdn.jsdelivr.net/gh/gaoxiao6331/cdn-test@examples/ex-res.js"
                     class="btn btn-primary" id="enablePrefetchBtn">
                     ✅ Enable Prefetch Mode
                 </a>
-                <a href="/a/" class="btn btn-secondary" id="disablePrefetchBtn">
+                <a href="/prefetcher-examples/a/" class="btn btn-secondary" id="disablePrefetchBtn">
                     ❌ Disable Prefetch Mode
                 </a>
             </div>
 
             <div class="btn-group">
-                <a href="/b/" class="btn btn-primary" id="navigateBtn">
+                <a href="/prefetcher-examples/b/" class="btn btn-primary" id="navigateBtn">
                     🔗 Visit Site B
                 </a>
                 <button class="btn btn-secondary" id="clearHistoryBtn">
@@ -369,7 +369,7 @@
 
                     // Load prefetch.js to execute preloading
                     const prefetchScript = document.createElement('script');
-                    prefetchScript.src = '/prefetch.js';
+                    prefetchScript.src = '/prefetcher-examples/a/prefetch.js';
                     prefetchScript.onload = () => {
                         console.log('[Site A] prefetch.js executed, resource preloading complete');
                     };

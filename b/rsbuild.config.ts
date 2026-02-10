@@ -29,6 +29,7 @@ export default defineConfig({
         },
       },
     },
+    assetPrefix: '/prefetcher-examples/b/',
   },
   source: {
     entry: {
