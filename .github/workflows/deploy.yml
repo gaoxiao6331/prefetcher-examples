@@ -1,80 +1,68 @@
 name: Deploy A & B to GitHub Pages
 
 on:
-  # Trigger deployment on every push to main branch
   push:
     branches:
       - main
-
-  # Allow manual trigger from GitHub Actions UI
-  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Prevent concurrent deployments
 concurrency:
-  group: github-pages
-  cancel-in-progress: false
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout source code
-      - name: Checkout repository
+      # Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js 20
-      - name: Setup Node.js 20
+      # Setup Node.js 20 and enable pnpm cache
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
-      # 3. Setup pnpm
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+      # Enable pnpm via Corepack (built into Node.js 20)
+      - name: Enable pnpm
+        run: corepack enable
 
-      # 4. Install dependencies for project B (rsbuild React app)
-      - name: Install dependencies (B)
+      # Install dependencies for project b
+      - name: Install dependencies
         working-directory: b
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
-      # 5. Build project B
-      - name: Build B
+      # Build project b (rsbuild)
+      - name: Build b project
         working-directory: b
         run: pnpm build
 
-      # 6. Prepare GitHub Pages artifact directory
-      - name: Prepare Pages artifact
+      # Prepare files for GitHub Pages
+      - name: Prepare Pages files
         run: |
-          rm -rf pages
-          mkdir -p pages
+          mkdir -p dist
+          cp -r a dist/a
+          cp -r b/dist dist/b
 
-          # Project A (static files)
-          cp -r a pages/a
-
-          # Project B (rsbuild build output)
-          cp -r b/dist pages/b
-
-      # 7. Upload Pages artifact
+      # Upload build artifacts for GitHub Pages
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: pages
+          path: dist
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
 
     steps:
       # Deploy to GitHub Pages
