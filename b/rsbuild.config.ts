@@ -8,6 +8,15 @@ export default defineConfig({
   },
   html: {
     title: 'Site B',
+    tags: [
+      {
+        tag: 'link',
+        attrs: {
+          rel: 'icon',
+          href: 'data:,',
+        },
+      },
+    ],
   },
   output: {
     distPath: {
