@@ -23,13 +23,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Setup Node.js 20 and install pnpm
+      # Setup Node.js 20 (do NOT enable pnpm cache here)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          pnpm-version: 9
-          cache: pnpm
+
+      # Enable pnpm via Corepack
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+
+      # Cache pnpm store manually
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('b/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       # Install dependencies for project b
       - name: Install dependencies
